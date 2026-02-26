@@ -14,7 +14,7 @@ set.seed(2026)
 # Set working directory (update as needed)
 setwd("~/Documents/GitHub/wealth_tax")
 
-#Workign directory for home computer
+#Working directory for home computer
 setwd("/Users/ben/Documents/GitHub/wealth_tax")
 
 # =============================================================================
@@ -120,3 +120,6 @@ ggsave("npv_distribution.png", p, width = 10, height = 6, dpi = 300)
 ggsave("npv_distribution.pdf", p, width = 10, height = 6)
 
 cat("\nPlots saved: npv_distribution.png, npv_distribution.pdf\n")
+
+
+#
