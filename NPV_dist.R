@@ -148,7 +148,7 @@ run_npv_sim <- function(r_min, r_max, filename_tag) {
   
   # Plot
   pct_negative <- round(100 * mean(results$npv < 0), 1)
-  r_label <- sprintf("r ~ U[%.1f%%, %.0f%%]", r_min*100, r_max*100)
+  r_label <- sprintf("r ~ U[%.1f%%, %.1f%%]", r_min*100, r_max*100)
   
   p <- ggplot(results, aes(x = npv)) +
     geom_histogram(aes(fill = npv < 0), bins = 80, alpha = 0.85, 
@@ -160,7 +160,7 @@ run_npv_sim <- function(r_min, r_max, filename_tag) {
     ) +
     geom_vline(xintercept = 0, linetype = "dashed", color = "black", 
                linewidth = 0.7) +
-    annotate("text", x = -5, y = Inf, vjust = 2, hjust = 1,
+    annotate("text", x = -Inf, y = Inf, vjust = 2, hjust = -1.65,
              label = paste0(pct_negative, "% of draws\nyield negative NPV"),
              size = 4, fontface = "bold", color = "#B3173C") +
     labs(
@@ -173,10 +173,10 @@ run_npv_sim <- function(r_min, r_max, filename_tag) {
     theme(
       plot.title = element_text(face = "bold", size = 14),
       plot.subtitle = element_text(size = 10, color = "gray40"),
-      legend.position = c(0.85, 0.85),
+      legend.position = c(0.12, 0.85),
       legend.background = element_rect(fill = "white", color = "gray80")
     )
-  
+  print(p)
   ggsave(paste0("npv_distribution_", filename_tag, ".png"), p, 
          width = 10, height = 6, dpi = 300)
   ggsave(paste0("npv_distribution_", filename_tag, ".pdf"), p, 
@@ -190,4 +190,4 @@ run_npv_sim <- function(r_min, r_max, filename_tag) {
 # =============================================================================
 
 run_npv_sim(0.03, 0.07, "3to7")
-run_npv_sim(0.015, 0.07, "1.5to7")
+run_npv_sim(0.015, 0.045, "1.5to4.5")
