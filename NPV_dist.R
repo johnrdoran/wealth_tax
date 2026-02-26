@@ -14,6 +14,9 @@ set.seed(2026)
 # Set working directory (update as needed)
 setwd("~/Documents/GitHub/wealth_tax")
 
+#Workign directory for home computer
+setwd("/Users/ben/Documents/GitHub/wealth_tax")
+
 # =============================================================================
 # PART I: Define Parameters
 # =============================================================================
@@ -38,7 +41,7 @@ c_income <- runif(n_sims, min = 4.9, max = 5.8)
 
 # r: Real discount rate (3% to 7%)
 #   Uniform across standard range
-r_discount <- runif(n_sims, min = 0.03, max = 0.07)
+r_discount <- runif(n_sims, min = 0.015, max = 0.07)
 
 # =============================================================================
 # PART III: Compute NPV for Each Draw
