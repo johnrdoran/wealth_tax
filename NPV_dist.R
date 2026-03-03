@@ -22,26 +22,30 @@ setwd("/Users/ben/Documents/GitHub/wealth_tax")
 # =============================================================================
 
 # Fixed
-baseline_revenue <- 107.04  # $B, no-departure wealth tax revenue
+baseline_revenue <- 94.2  # $B, no-departure wealth tax revenue
 
 # Number of simulations
 n_sims <- 100000
+
+# Parameter ranges
+wt_min <- 35
+wt_max <- 67.51
+c_min  <- 3.3
+c_max  <- 5.8
 
 # =============================================================================
 # PART II: Generate Random Parameter Draws
 # =============================================================================
 
-# WT: Wealth tax revenue ($44B to $66B, centered at $48B)
-#   Triangular-ish: uniform draw across plausible range
-wt <- runif(n_sims, min = 44, max = 66)
+# WT: Wealth tax revenue ($35B to $67.51B)
+wt <- runif(n_sims, min = wt_min, max = wt_max)
 
-# C: Annual income tax contribution ($4.9B to $5.8B)
-#   Uniform across Splinter lower bound to Pareto upper bound
-c_income <- runif(n_sims, min = 4.9, max = 5.8)
+# C: Annual income tax contribution ($3.3B to $5.8B)
+#   Uniform across MC lower bound (K=500) to Pareto upper bound (K=212)
+c_income <- runif(n_sims, min = c_min, max = c_max)
 
-# r: Real discount rate (3% to 7%)
-#   Uniform across standard range
-r_discount <- runif(n_sims, min = 0.015, max = 0.05)
+# r: Real discount rate (1.5% to 4.5%)
+r_discount <- runif(n_sims, min = 0.015, max = 0.045)
 
 # =============================================================================
 # PART III: Compute NPV for Each Draw
@@ -104,7 +108,7 @@ p <- ggplot(results, aes(x = npv)) +
            size = 4, fontface = "bold", color = "#B3173C") +
   labs(
     title = "Distribution of Net Present Value: Billionaire Tax Act",
-    subtitle = paste0("100,000 draws: WT ~ U[$44B, $66B], C ~ U[$4.9B, $5.8B], r ~ U[3%, 7%]"),
+    subtitle = paste0("100,000 draws: WT ~ U[$35B, $67.5B], C ~ U[$3.3B, $5.8B], r ~ U[1.5%, 4.5%]"),
     x = "Net Present Value ($B)",
     y = "Count"
   ) +
@@ -122,14 +126,14 @@ ggsave("npv_distribution.pdf", p, width = 10, height = 6)
 cat("\nPlots saved: npv_distribution.png, npv_distribution.pdf\n")
 
 
-## =============================================================================
-# PART V: Simulation Function (call once per specification)
+# =============================================================================
+# PART VI: Simulation Function (call once per specification)
 # =============================================================================
 
 run_npv_sim <- function(r_min, r_max, filename_tag) {
   
-  wt <- runif(n_sims, min = 44, max = 66)
-  c_income <- runif(n_sims, min = 4.9, max = 5.8)
+  wt <- runif(n_sims, min = wt_min, max = wt_max)
+  c_income <- runif(n_sims, min = c_min, max = c_max)
   r_discount <- runif(n_sims, min = r_min, max = r_max)
   
   f <- 1 - (wt / baseline_revenue)
@@ -160,12 +164,12 @@ run_npv_sim <- function(r_min, r_max, filename_tag) {
     ) +
     geom_vline(xintercept = 0, linetype = "dashed", color = "black", 
                linewidth = 0.7) +
-    annotate("text", x = -Inf, y = Inf, vjust = 2, hjust = -1.65,
+    annotate("text", x = -Inf, y = Inf, vjust = 2, hjust = -1.85,
              label = paste0(pct_negative, "% of draws\nyield negative NPV"),
              size = 4, fontface = "bold", color = "#B3173C") +
     labs(
       title = "Distribution of Net Present Value: Billionaire Tax Act",
-      subtitle = paste0("100,000 draws: WT ~ U[$44B, $66B], C ~ U[$4.9B, $5.8B], ", r_label),
+      subtitle = paste0("100,000 draws: WT ~ U[$35B, $67.5B], C ~ U[$3.3B, $5.8B], ", r_label),
       x = "Net Present Value ($B)",
       y = "Count"
     ) +
@@ -179,15 +183,13 @@ run_npv_sim <- function(r_min, r_max, filename_tag) {
   print(p)
   ggsave(paste0("npv_distribution_", filename_tag, ".png"), p, 
          width = 10, height = 6, dpi = 300)
-  ggsave(paste0("npv_distribution_", filename_tag, ".pdf"), p, 
-         width = 10, height = 6)
+ 
   
   cat(sprintf("  Saved: npv_distribution_%s.png/.pdf\n", filename_tag))
 }
 
 # =============================================================================
-# PART VI: Run Both Specifications
+# PART VII: Run Both Specifications
 # =============================================================================
 
-run_npv_sim(0.03, 0.07, "3to7")
-run_npv_sim(0.015, 0.045, "1.5to4.5")
+run_npv_sim(0.015, 0.045, "1.5to4.5_v5")
