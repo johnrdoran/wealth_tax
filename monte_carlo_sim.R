@@ -200,13 +200,19 @@ p <- ggplot(results, aes(x = K)) +
     y = "Aggregate tax liability ($B, FY 2024-25)",
     caption = "Solid blue = mean; dashed = median; light band = 5th-95th pctl; dark band = IQR"
   ) +
-  scale_x_continuous(breaks = seq(200, 2000, by = 200)) +
+  scale_x_continuous(breaks = seq(200, 1000, by = 100)) +
   scale_y_continuous(labels = function(x) paste0("$", x, "B")) +
   theme_minimal(base_size = 12) +
   theme(
     plot.title = element_text(face = "bold"),
     panel.grid.minor = element_blank()
   )
+
+p <- p + coord_cartesian(xlim = c(212, 1000))
+print(p)
+
+ggsave("billionaire_tax_monte_carlo_v3.png", p, width = 10, height = 6.5)
+
 
 ggsave("billionaire_tax_monte_carlo_v2.pdf", p, width = 10, height = 6.5)
 ggsave("billionaire_tax_monte_carlo_v2.png", p, width = 10, height = 6.5, dpi = 300)
