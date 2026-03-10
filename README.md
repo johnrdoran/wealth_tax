@@ -44,6 +44,10 @@ Both scripts are self-contained R files. To replicate:
 | 5.3 Net Present Value by Departure Scenario | NPV across three departure scenarios and three discount rates (Table 3) | `NPV_calculations_5.2.xlsx` |
 | 5.4 Distribution of Outcomes Across the Parameter Space | 100,000-draw simulation; 71% of draws yield negative NPV (mean = -$24.7B) | `NPV_dist.R`, `npv_distribution_*.png/.pdf` |
 
+## Disclaimer
+
+The views expressed in this paper are those of the authors and do not necessarily reflect the views of any affiliated institutions. This repository is provided for replication and transparency purposes only.
+
 ## License
 
 This project is licensed under the [MIT License](./LICENSE).
