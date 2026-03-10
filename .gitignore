@@ -1,0 +1,11 @@
+# R workspace and history
+.RData
+.Rhistory
+.Rproj.user/
+
+# macOS
+.DS_Store
+
+# Temporary files
+*~
+*.swp
