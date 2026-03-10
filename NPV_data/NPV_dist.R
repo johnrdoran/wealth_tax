@@ -11,11 +11,8 @@ library(ggthemes)
 # Set seed
 set.seed(2026)
 
-# Set working directory (update as needed)
-setwd("~/Documents/GitHub/wealth_tax")
-
-#Working directory for home computer
-setwd("/Users/ben/Documents/GitHub/wealth_tax")
+# Set working directory (update to your local clone)
+# setwd("~/Documents/GitHub/wealth_tax")
 
 # =============================================================================
 # PART I: Define Parameters
