@@ -2,17 +2,19 @@
 # Date: February 2026
 # Purpose: Simulate NPV across plausible parameter ranges, plot distribution
 # =============================================================================
-# PART 0: Load Packages
+# PART 0: Setup
 # =============================================================================
-library(dplyr)
 library(ggplot2)
 library(ggthemes)
 
-# Set seed
 set.seed(2026)
 
-# Set working directory (update to your local clone)
-# setwd("~/Documents/GitHub/wealth_tax")
+# Set working directory to the root of your local clone, e.g.:
+# setwd("<YOUR_PATH>/wealth_tax")
+
+# Update output directory to match your local setup, e.g.:
+# plot_dir <- "<YOUR_PATH>/wealth_tax/NPV_plots"
+plot_dir <- "../NPV_plots"
 
 # =============================================================================
 # PART I: Define Parameters
@@ -87,13 +89,14 @@ cat(sprintf("  Pct Below -$10B:    %.1f%%\n", 100 * mean(results$npv < -10)))
 cat(sprintf("  Pct Below -$25B:    %.1f%%\n", 100 * mean(results$npv < -25)))
 
 # =============================================================================
-# PART V: Plot Distribution of NPV Outcomes
+# PART V: Plot and Save
 # =============================================================================
 
 pct_negative <- round(100 * mean(results$npv < 0), 1)
 
 p <- ggplot(results, aes(x = npv)) +
-  geom_histogram(aes(fill = npv < 0), bins = 80, alpha = 0.85, color = "white", linewidth = 0.1) +
+  geom_histogram(aes(fill = npv < 0), bins = 80, alpha = 0.85,
+                 color = "white", linewidth = 0.1) +
   scale_fill_manual(
     values = c("TRUE" = "#B3173C", "FALSE" = "#2C5F8A"),
     labels = c("TRUE" = "Negative NPV", "FALSE" = "Positive NPV"),
@@ -117,76 +120,9 @@ p <- ggplot(results, aes(x = npv)) +
     legend.background = element_rect(fill = "white", color = "gray80")
   )
 
-ggsave("npv_distribution.png", p, width = 10, height = 6, dpi = 300)
-ggsave("npv_distribution.pdf", p, width = 10, height = 6)
+print(p)
 
-cat("\nPlots saved: npv_distribution.png, npv_distribution.pdf\n")
+ggsave(file.path(plot_dir, "npv_distribution.png"), p, width = 10, height = 6, dpi = 300)
+ggsave(file.path(plot_dir, "npv_distribution.pdf"), p, width = 10, height = 6)
 
-
-# =============================================================================
-# PART VI: Simulation Function (call once per specification)
-# =============================================================================
-
-run_npv_sim <- function(r_min, r_max, filename_tag) {
-  
-  wt <- runif(n_sims, min = wt_min, max = wt_max)
-  c_income <- runif(n_sims, min = c_min, max = c_max)
-  r_discount <- runif(n_sims, min = r_min, max = r_max)
-  
-  f <- 1 - (wt / baseline_revenue)
-  annual_loss <- f * c_income
-  pv_lost <- annual_loss / r_discount
-  npv <- wt - pv_lost
-  
-  results <- data.frame(wt, c_income, r_discount, f, annual_loss, pv_lost, npv)
-  
-  # Summary
-  cat(sprintf("\n=== NPV Distribution Summary (r ~ U[%.1f%%, %.1f%%]) ===\n", r_min*100, r_max*100))
-  cat(sprintf("  Mean NPV:           $%.1fB\n", mean(results$npv)))
-  cat(sprintf("  Median NPV:         $%.1fB\n", median(results$npv)))
-  cat(sprintf("  Std Dev:            $%.1fB\n", sd(results$npv)))
-  cat(sprintf("  Pct Negative NPV:   %.1f%%\n", 100 * mean(results$npv < 0)))
-  
-  # Plot
-  pct_negative <- round(100 * mean(results$npv < 0), 1)
-  r_label <- sprintf("r ~ U[%.1f%%, %.1f%%]", r_min*100, r_max*100)
-  
-  p <- ggplot(results, aes(x = npv)) +
-    geom_histogram(aes(fill = npv < 0), bins = 80, alpha = 0.85, 
-                   color = "white", linewidth = 0.1) +
-    scale_fill_manual(
-      values = c("TRUE" = "#B3173C", "FALSE" = "#2C5F8A"),
-      labels = c("TRUE" = "Negative NPV", "FALSE" = "Positive NPV"),
-      name = NULL
-    ) +
-    geom_vline(xintercept = 0, linetype = "dashed", color = "black", 
-               linewidth = 0.7) +
-    annotate("text", x = -Inf, y = Inf, vjust = 2, hjust = -1.85,
-             label = paste0(pct_negative, "% of draws\nyield negative NPV"),
-             size = 4, fontface = "bold", color = "#B3173C") +
-    labs(
-      title = "Distribution of Net Present Value: Billionaire Tax Act",
-      subtitle = paste0("100,000 draws: WT ~ U[$35B, $67.5B], C ~ U[$3.3B, $5.8B], ", r_label),
-      x = "Net Present Value ($B)",
-      y = "Count"
-    ) +
-    theme_few() +
-    theme(
-      plot.title = element_text(face = "bold", size = 14),
-      plot.subtitle = element_text(size = 10, color = "gray40"),
-      legend.position = c(0.12, 0.85),
-      legend.background = element_rect(fill = "white", color = "gray80")
-    )
-  print(p)
-  ggsave(paste0("npv_distribution_", filename_tag, ".png"), p, 
-         width = 10, height = 6, dpi = 300)
- 
-  
-  cat(sprintf("  Saved: npv_distribution_%s.png/.pdf\n", filename_tag))
-}
-
-# =============================================================================
-# PART VII: Run Both Specifications
-# =============================================================================
-
-run_npv_sim(0.015, 0.045, "1.5to4.5_v5")
+cat("\nPlots saved to NPV_plots/\n")

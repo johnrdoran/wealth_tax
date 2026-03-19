@@ -1,22 +1,6 @@
-# Billionaire Tax Act: Monte Carlo Simulation for 
-# Date: March  2026
-# Purpose: Simulate plausible outcomes for income taxes paid. 
-# =============================================================================
-# PART 0: Load Packages
-# =============================================================================
-library(dplyr)
-library(ggplot2)
-library(ggthemes)
-
-# Set seed
-set.seed(2026)
-
-# Set working directory (update to your local clone)
-# setwd("~/Documents/GitHub/wealth_tax")
-
 ################################################################################
-# Monte Carlo Simulation: Billionaire Income Tax Contributions (v2)
-# 
+# Monte Carlo Simulation: Billionaire Income Tax Contributions
+#
 # Purpose: Estimate the aggregate CA income tax liability of 212 billionaires
 #          under the assumption that they are NOT necessarily the top 212
 #          earners in the $10M+ AGI bracket, but are instead randomly
@@ -26,9 +10,19 @@ set.seed(2026)
 # Date: March 2026
 ################################################################################
 
+# =============================================================================
+# PART 0: Setup
+# =============================================================================
 library(ggplot2)
 
 set.seed(42)
+
+# Set working directory to the root of your local clone, e.g.:
+# setwd("<YOUR_PATH>/wealth_tax")
+
+# Update output directory to match your local setup, e.g.:
+# plot_dir <- "<YOUR_PATH>/wealth_tax/NPV_plots"
+plot_dir <- "../NPV_plots"
 
 # =============================================================================
 # 1. DATA AND PARETO FIT
@@ -211,13 +205,10 @@ p <- ggplot(results, aes(x = K)) +
 p <- p + coord_cartesian(xlim = c(212, 1000))
 print(p)
 
-ggsave("billionaire_tax_monte_carlo_v3.png", p, width = 10, height = 6.5)
+ggsave(file.path(plot_dir, "billionaire_tax_monte_carlo.pdf"), p, width = 10, height = 6.5)
+ggsave(file.path(plot_dir, "billionaire_tax_monte_carlo.png"), p, width = 10, height = 6.5, dpi = 300)
 
-
-ggsave("billionaire_tax_monte_carlo_v2.pdf", p, width = 10, height = 6.5)
-ggsave("billionaire_tax_monte_carlo_v2.png", p, width = 10, height = 6.5, dpi = 300)
-
-cat("\nPlots saved: billionaire_tax_monte_carlo_v2.pdf / .png\n")
+cat("\nPlots saved to NPV_plots/\n")
 
 # =============================================================================
 # 8. EXPORT RESULTS
